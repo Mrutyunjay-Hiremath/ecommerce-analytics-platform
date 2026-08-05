@@ -21,7 +21,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 3. Data Loading
-@st.cache_data
+@st.cache_data(ttl=60)
 def load_data():
     conn = duckdb.connect("data/analytics.db")
     df = conn.execute("SELECT * FROM transactions").df()
