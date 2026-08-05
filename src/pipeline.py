@@ -17,7 +17,7 @@ def run_etl():
     # 3. Store into High-Performance DuckDB Database
     conn = duckdb.connect("data/analytics.db")
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS transactions AS SELECT * FROM df"
+        "CREATE OR REPLACE TABLE transactions AS SELECT * FROM df"
     )
     conn.close()
 
