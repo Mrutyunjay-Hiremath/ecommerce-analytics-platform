@@ -1,0 +1,35 @@
+name: Automated Daily Analytics Pipeline
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at Midnight UTC every day
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  run-etl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ETL and Machine Learning Pipeline
+        run: |
+          python src/generator.py
+          python src/pipeline.py
+          python src/ml_model.py
+
+      - name: Commit and Push Updated Database
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/
+          git commit -m "Automated daily data update" || echo "No changes to commit"
+          git push
